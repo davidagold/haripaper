@@ -164,12 +164,6 @@ As noted above, a d-reduction map is in a sense of the opposite direction of a p
 \section{The principal curvatures strategy}
 
 
-[Paragraph about how our goals as stated above resemble nonparametric regression]
-
-We concluded the previous section by remarking that 
-
-
-
 Let $(\tilde{M}, \tilde{g})$ denote an ambient Riemannian manifold and its Riemannian metric, and let $M$ be an embedded submanifold of $\tilde{M}$ endowed with the induced metric $g = \iota^{*} \tilde{g}$, where $\iota^*$ denotes the pullback operator under the inclusion map $\iota$. In the case of our local regression model, $\tilde{M} = \R^D$ endowed with the usual flat metric. We concluded the previous section by remarking that our objective is to [something about encoding the relationship between the geometry of the ambient space and the geometry of the regression manifold $M$]. Thus it is natural to study ...
 
 Let $TM$ and $T\tilde{M}$ denote the tangent bundles to $M$ and $\tilde{M}$ respectively, and let $NM$ denote the normal bundle to $M$ in $\tilde{M}$. Let
@@ -185,13 +179,38 @@ where $X$ and $Y$ are extended arbitrarily to an open subset of $\tilde{M}$. The
 \benn
 	\tilde{\nabla}_X Y \ = \ \nabla_X Y + \mathrm{II}(X, Y).
 \eenn
-There is a corresponding formula for covariant derivatives along curves. If $\gamma: J \to M$ is a smooth curve, and $X$ is a smooth vector field along $\gamma$ that is everywhere tangent to $M$, then
+There is a corresponding formula for covariant derivatives along curves. In what follows we will always let $J \subseteq \R$ denote an interval of the real line. If $\gamma: J \to M$ is a smooth curve, and $X$ is a smooth vector field along $\gamma$ that is everywhere tangent to $M$, then
 \benn
 	\tilde{D}_tX \ = \ D_tX + \mathrm{II}(\gamma', X),
 \eenn
 where $\tilde{D}_t X$ and $D_t X$ denote the covariant derivative of $X$ along $\gamma$ with respect to the connections of the ambient metric $\tilde{g}$ and the induced metric $g$ respectively.
 
+The latter formula is particularly useful in the study of geodesics of $M$. Suppose $\gamma: J \to M$ is a smooth unit-speed curve in $M$. The \emph{(geodesic) curvature of $\gamma$} in $M$, denoted by $\kappa: J \to \R$, is given by the length of the acceleration vector field calculated via the covariant derivative:
+\benn
+	\kappa(t) \ = \ | D_t \gamma'(t) |.
+\eenn
+The geodesic curvature of $\gamma$ in $M$ is known as its \emph{intrinsic curvature}. If, as in the context of this essay, $M$ is assumed to be an embedded Riemannian submanifold of some $(\tilde{M}, \tilde{g})$ and is considered with the induced Riemannian metric, then we may also compute the \emph{extrinsic curvature} of such a curve $\gamma$ in $M$ by taking the covariant derivative along $\gamma$ instead with respect to the ambient connection $\tilde{\nabla}$ of $\tilde{M}$. We may refer to the intrinsic curvature of $\gamma$ as the $g$-curvature of $\gamma$ and the extrinsic curvature of $\gamma$ as the $\tilde{g}$-curvature of $\gamma$. Similarly, we may refer to geodesics in $M$ as $g$-geodesics, since they are geodesics with respect to the connection determined by the induced metric $g$. Similarly, we may refer to geodesics in $\tilde{M}$ as $\tilde{g}$-geodesics.)
 
+If $q$ is a point in $M$ $v$ is a tangent vector in $T_p M$ we let $\gamma_v$ denote the unique geodesic in $M$ through $q$ satisfying $\gamma(0) = q$ and $\gamma'(0) = v$. If $v \in T_q M$ is a unit vector, then the Gauss Formula for curves and the defining fact that the covariant derivative of the velocity field of a geodesic along the latter is 0 yields that $|\mathrm{II}(v, v)|$ is the $\tilde{g}$-curvature of $\gamma_v$ at $q$.
+
+We have presented the foregoing relationships between the connections of $\tilde{M}$ and $M$ at general level. In the particular context of the present program, there are two additional geometric facts that we may exploit: (i) the fact that the submanifold $M$ is a hypersurface of $\tilde{M}$ and (ii) the fact that $\tilde{M}$ is Euclidean $D$-space. The former fact allows us to summarize the behavior of the second fundamental form 
+
+\benn
+\mathrm{II}
+\eenn
+
+
+
+\begin{prop} Let $M \subseteq \R^{p+1}$ be a Riemannian hypersurface. Let $q \in M$ and let $\kappa_1, \ldots, \kappa_p$ denote the principal curvatures of $M$ at $q$ with respect to some choice of unit normal. Then there is an isometry $\varphi: \R^{p+1} \to \R^{p+1}$ that takes $q$ to the origin and takes a neighborhood of $q$ in $M$ to the graph $\Gamma(f)$ of a function $f(x^1, \ldots, x^p)$ given by
+\be
+	f(x) \ = \ \foh\left( \kappa_1(x^1)^2 + \cdots + \kappa_p(x^p)^2\right) + O(|x|^3).	
+\ee
+\end{prop}
+The foregoing proposition provides an approximation to precisely the sort of graph parametrizations our program seeks. In theory, this proposition could be quite useful. However, in practice there are at least two nontrivial tasks that would need to be accomplished in order to get the program off the ground:
+\begin{enumerate}
+\item We would need to identify the orthogonal transformation of $\R^{p+1}$ in the first $p$ variables that renders the scalar second fundamental form diagonal with respect to the basis $(\partial/\partial x^1, \ldots \partial/\partial x^p)$,
+\item We would need to estimate the principal curvatures $\kappa_1, \ldots, \kappa_p$ at $q$ without being able to identify $q$ via the ambient coordinates of $\R^{p+1}$. 
+\end{enumerate}
 
 
 
