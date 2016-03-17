@@ -1,0 +1,203 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amsfonts,amsthm,amssymb,amscd}
+\usepackage{geometry}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{bm}
+\usepackage{mathtools}
+
+% Begin/end shortcuts
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\benn}{\begin{equation*}}
+\newcommand{\eenn}{\end{equation*}}
+
+% Theorem shortcuts
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{exa}[thm]{Example}
+\newtheorem{defi}[thm]{Definition}
+\newtheorem{exe}[thm]{Exercise}
+\newtheorem{rek}[thm]{Remark}
+\newtheorem{que}[thm]{Question}
+\newtheorem{prob}[thm]{Problem}
+\newtheorem{cla}[thm]{Claim}
+\newtheorem{esti}[thm]{Estimation}
+
+% Two-case and three-case definition shortcuts
+\newcommand{\twocase}[5]{#1 \begin{cases} #2 & \text{#3}\\ #4
+&\text{#5} \end{cases}   }
+\newcommand{\threecase}[7]{#1 \begin{cases} #2 &
+\text{#3}\\ #4 &\text{#5}\\ #6 &\text{#7} \end{cases}   }
+
+% Greek letter shortcuts
+\newcommand{\ga}{\alpha}
+\newcommand{\gb}{\beta}
+\newcommand{\gep}{\epsilon}
+\newcommand{\vgep}{\varepsilon}
+\newcommand{\gth}{\theta}
+\newcommand{\vgth}{\vartheta}
+
+% Fraction shortcuts
+\newcommand{\foh}{\frac{1}{2}}
+\newcommand{\foq}{\frac{1}{4}}
+\newcommand{\fon}{\frac{1}{n}}
+
+% Blackboard letter shortcuts  
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\W}{\mathbb{W}}
+\newcommand{\sph}{\mathbb{S}}
+
+% Matrix shortcuts
+\newcommand{\mattwo}[4]
+{\left(\begin{array}{cc}
+                        #1  & #2   \\
+                        #3 &  #4
+                          \end{array}\right) }
+\newcommand{\matthree}[9]
+{\left(\begin{array}{ccc}
+                        #1  & #2 & #3  \\
+                        #4 &  #5 & #6 \\
+                        #7 & #8 & #9 \\
+                          \end{array}\right) }
+
+% Linear algebra shortcuts
+\newcommand{\col}{\mathrm{col} \,}
+\newcommand{\im}{\mathrm{im} \,}
+\newcommand{\rank}{\mathrm{rank} \,}
+\newcommand{\tr}{\mathrm{tr} \,}
+\newcommand{\spn}{\mathrm{span} \,}
+\newcommand{\iprod}[2]{\left\langle #1, \, #2 \right\rangle}
+
+% Calculus shortcuts
+\newcommand{\dd}[2]{\frac{d#1}{d#2}}
+\newcommand{\pdd}[2]{\frac{\partial #1}{\partial #2}}
+
+% Operator shortcuts
+\newcommand{\Ad}{\mathrm{Ad}}
+\newcommand{\Lie}[1]{\mathrm{Lie}(#1)}
+\newcommand{\sgn}{\mathrm{sgn} \,}
+\newcommand{\supp}{\mathrm{supp} \,}
+\newcommand{\diam}{\mathrm{diam} \,}
+
+% Geometry shortcuts
+\newcommand{\del}[2]{\nabla_{#1}#2}
+\newcommand{\multi}[1]{\underset{\raisebox{2pt}[0pt]{$\rightharpoondown$}}{#1}}
+\newcommand{\multis}[1]{\underset{\raisebox{2pt}[2pt]{$\scriptscriptstyle\rightharpoondown$}}{#1}}
+
+% Probability shortcuts
+\newcommand{\Prb}[1]{\mathbb{P}\left(#1\right)}
+\newcommand{\E}[1]{E\left[ #1 \right]}
+\newcommand{\Ex}[2]{E_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left[ #1 \right]}
+\newcommand{\cid}{\overset{d}{\to}}
+\newcommand{\ind}[1]{\mathbbm{1}\!\left\{ #1 \right\} }
+
+% Misc shortcuts
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
+\numberwithin{equation}{section}
+
+\begin{document}
+\newcommand{\X}{\bs{\mathrm{X}}}
+\newcommand{\Y}{\bs{\mathrm{Y}}}
+\newcommand{\Tr}[1]{{#1}^{\mathrm{T}}}
+\newcommand{\obs}{(Y_i, X_i)}
+\newcommand{\obsi}{(Y_{i^*}, X_{i^*})}
+
+\title{Regression as Manifold Learning}
+\author{David A. Gold}
+\maketitle
+
+\section{Introduction}
+
+Statistical regression is the problem of fitting a model to a data-generating process. Manifold learning is the problem of identifying a submanifold immersed in a ``high''-dimensional ambient space -- usually Euclidean space. \footnote{Manifold learning can also refer to the problem of finding (typically nonlinear) projections of the data onto a lower-dimensional subspace.} This essay explores the intersection of these two fields. We attempt to formulate regression as the problem of finding a $p$-dimensional ``regression hypersurface'' of the $(p+1)$-dimensional Euclidean space in which the observations $((y_1, x_1), \ldots, (y_n, x_n))$ are given. In the context of linear regression, the regression hypersurface is just a $p$-dimensional linear subspace of $(p+1)$-dimensional Euclidean space, and there exists a global coordinate chart for the hypersurface in which one of the covariates --- the ``response variable'' --- is written as a linear function of the remaining $p-1$ covariates. We will (i) discuss the challenges for developing an appropriate geometric generalization, (ii) outline some possible strategies for tackling these challenges, and (iii) identify results and literature that might be brought to bear in the pursuit of such strategies. 
+
+Throughout the paper we write $\chi_i = (Y_i, X_i) = (Y_i, X_{1i}, \ldots, X_{pi})$ for brevity. We may also refer to the ``regression hypersurface'' as the ``regression manifold''. By a $d$-dimensional manifold $M$ we mean a second-countable Hausdorff space $M$ for which each point $a \in M$ has a neighborhood $U$ that is homeomorphic via some $\phi_U: U \to \hat{U} \subseteq \R^d$ to an open subset of $\R^d$. For simplicity, we restrict our consideration the case of \emph{smooth manifolds}, i.e. manifolds for which there exists a maximal atlas of coordinate charts ...
+
+\section{Local regression}
+
+In a general regression setting we assume that the response variable $Y_i$ can be written as
+\be\label{eq:tradreg}
+	Y_i \ = \ f(X_{1i}, \ldots, X_{pi}) + \gep_i 
+\ee
+for some regression function $f: \R^p \to \R$ and noise $\gep_i$ following some probability distribution. This formulation, however, does not reflect the essentially local nature of much of Riemannian geometry. That is, if we suppose there exists a $p$-dimensional Riemannian regression hypersurface $M$ of a more general geometric character, then we cannot assume that there is a regression function $f$ for which \eqref{eq:tradreg} is \emph{globally} valid. For instance, suppose our data were given in $p + 1 = 3$ dimensions and that the 2-dimensional regression manifold $M$ were the unit sphere $\sph^2$. There are no coordinates $(x_1, x_2)$ that cover $M$ and allow us to write the latter (as a submanifold of $\R^3$) as the graph of some differentiable function $y = f(x^1, x^2)$. Rather, we may cover the sphere with local coordinate charts...
+
+The above suggests that the model in our setting ought to be resemble the following. Let $\chi_1, \ldots, \chi_n$ be observations given in $(p+1)$ dimensions. We assume there exists a $p$-dimensional regression manifold $M$ with coordinate charts $(U_a, \phi_a)$, each with respective local coordinates $(x_a^1, \ldots, x_a^p) = x_a$ that correspond by index to the covariates $X_1, \ldots, X_p$ and locally allow $M$ to be written as the graph
+\benn
+\Gamma(f_a ) = \{ (x_a, y_a) \in \R^{p+1} \, | \, x_a \in U_a, y_a = f_a(x_a) \}
+\eenn
+for smooth functions $f_a: U_a \to \R$. (Such $x_a$ are called \emph{graph coordinates}.) Finally, we assume for each such coordinate chart and respective $f_a$ that there exists a non-empty subset $\mathcal{X}_a$ of the observations $(\chi_1, \ldots, \chi_n)$ so that the following \emph{local regression relationship} holds for each $\chi_i \in \mathcal{X}_a$:
+\be\label{eq:localreg}
+	Y_i \ = \ f_a(X_{1i}, \ldots, X_{pi}) + \gep_i,
+\ee
+where the $\gep_i$ are again noises that following some for now unspecified distribution. The framework for local regression based on \eqref{eq:localreg} is at the heart of the present essay's proposed research program. It provides the link between manifold theory and statistical regression by requiring that, locally, $M$ may be written as the graph of a function that takes a subset of the observations $\chi_i$ to their theoretical mean responses. The ultimate goal of the program is to identify ways in which geometric considerations could plausibly come to bear on the structure of the $f_a$s in a way that is useful for the purposes of statistical inference and prediction. We will explore a possible strategy for pursuing this goal in the following sections. But we must first discuss, albeit briefly, some technical considerations concerning the model reflected in \eqref{eq:localreg}.
+
+In particular, the criteria for membership in $\mathcal{X}_a$ require scrutiny. It is important to note is that it is not straightforward to base such criteria on any geometric property intrinsic to $M$, since in general $\chi_i$ will not belong to $M$. For instance, we cannot let $\mathcal{X}_a$ be a neighborhood in $M$. Perhaps the criterion could instead be metrical --- that is, we might say that $\chi_i \in \mathcal{X}_a$ if $d(\chi_i, U_a) < R_a$ for some $R_a > 0$, where $d$ denotes the Euclidean distance in $p+1$ dimensions. However, the utility of this suggestion will depend on what information about the size and location of the charts $(U_a, \phi_a)$ is available, or on what assumptions can reasonably be made. 
+
+\section{Manifold learning as dimensionality reduction}
+
+In the previous section we introduced a framework in which the problem of statistical regression is formulated as a problem of learning a hypersurface of the ambient $(p+1)$-dimensional space in which the observations $\chi_1, \ldots, \chi_n$ are given. For our purposes, to ``learn'' a manifold means to learn the structure of the local regression functions $f_a$ described above. However, there is another sense of ``manifold learning'' often used in the literature, i.e. the sense of dimensionality reduction. The reasoning goes as follows: if the observations $\chi_1, \ldots \chi_n$, which are given in some $D$-dimensional ambient space $R^D$, lie on or near a $d$-dimensional submanifold of $R^D$, then we ought to be able to find a $d$-dimensional coordinate representation of the $\chi_i$ that preserves certain geometric properties of the original coordinate representation. In other words, the objective of manifold learning as dimensionality reduction is to learn a map $F: \R^D \to \R^d$ with certain desired properties. We may refer to such maps $F$ as \emph{dimensionality reduction maps} or \emph{d-reduction maps} for short. One may (as in [Hessian eigenmap thingy] ) view this project as one of learning a coordinate chart.
+
+These two notions of manifold learning are compatible yet potentially confusing due to certain choices of terminology. In particular, many papers on manifold learning as dimensionality reduction call such maps $F$ as above ``parametrizations'' of the low-dimensional submanifold $M$. However, this notion of a parametrization as essentially a coordinate chart is at odds with the notion of parametrization as it traditionally appears in differential geometry. The latter notion is given as follows. Suppose that $M$ is an immersed $d$-dimensional submanifold of $\R^D$, and let $U \subseteq \R^d$ be open. A \emph{(smooth) local parametrization of M} is a continuous map $\Psi: U \to \R^D$ whose image is an open subset of $M$ and which, when considered as a map into $M$, is (diffeomorphic\footnote{Note that ``diffeomorphic'' here is meant with respect to the smooth structure defined on $M$.}) homeomorphic onto its image. Thus, in the parlance of differential geometry, a parametrization is something of the reverse of what is meant by the parlance of manifold learning literature: it is a map \emph{from} $\R^d$ rather than \emph{to} $\R^d$ and its image is $D$-dimensional rather than $d$-dimensional.
+
+We may state more precisely the present research program's objective by examining a particular kind of parametrization. Suppose $U \subseteq \R^d$ is an open subset and $f: \R^d \to \R^k$ is a smooth function. The map $\gamma_f: U \to \R^n \times \R^k$ given by $\gamma_f(u) = (u, f(u))$ is a smooth global parametrization of the graph $\Gamma(f)$ of $f$ known as a \emph{graph parametrization}. Thus the objective of the present program may be described as one of finding functions $f_a$ for which the maps $\gamma_{f_a}$ are graph parametrizations\footnote{Note that these parametrizations are \emph{global} parametrizations of the respective graphs $\Gamma(f_a)$ but \emph{local} parametrizations of $M$.} of coordinate charts $(U_a, \phi_a)$. Thus, while both the present program and much of the manifold learning literature claim to seek ``parametrizations'' of a low-dimensional immersed manifold, the term ``parametrization'' has no consistent usage. The above has been an attempt to clarify its meaning. In what follows we will reserve the term ``parametrization'' for the sense given the term by differential geometers and we will refer to the ``parametrizations'' of dimensionality reduction manifold learning as d-reduction maps. 
+
+As noted above, a d-reduction map is in a sense of the opposite direction of a parametrization: the former take points from the high-dimensional ambient space to low-dimensional representations, while the latter take points from a subset of $\R^d$ with $d$ the dimension of $M$ to the $D$-dimensional ambient space. Though d-reduction maps may take into account aspects of the high-dimensional representation of the data in the ambient space, they do not preserve much of the high-dimensional structure. On the one hand, this is supposed to be the point of manifold learning as dimensionality reduction: a way to learn the intrinsic features or ``degrees of freedom'' of data. On the other hand, 
+
+
+
+
+
+
+\section{The principal curvatures strategy}
+
+
+[Paragraph about how our goals as stated above resemble nonparametric regression]
+
+We concluded the previous section by remarking that 
+
+
+
+Let $(\tilde{M}, \tilde{g})$ denote an ambient Riemannian manifold and its Riemannian metric, and let $M$ be an embedded submanifold of $\tilde{M}$ endowed with the induced metric $g = \iota^{*} \tilde{g}$, where $\iota^*$ denotes the pullback operator under the inclusion map $\iota$. In the case of our local regression model, $\tilde{M} = \R^D$ endowed with the usual flat metric. We concluded the previous section by remarking that our objective is to [something about encoding the relationship between the geometry of the ambient space and the geometry of the regression manifold $M$]. Thus it is natural to study ...
+
+Let $TM$ and $T\tilde{M}$ denote the tangent bundles to $M$ and $\tilde{M}$ respectively, and let $NM$ denote the normal bundle to $M$ in $\tilde{M}$. Let
+\begin{align*}
+	\pi^{\top}: T\tilde{M}|_M \to TM, \\
+	\pi^{\perp}: T\tilde{M}|_M \to NM
+\end{align*}
+denote the \emph{tangential} and \emph{normal projections} from the tangent bundle of $\tilde{M}$ to the tangent and normal bundles of $M$ respectively. If $(E_1, \ldots, E_d)$ is an adapted orthonormal frame for $M$ in $\tilde{M}$, then $\pi^{\top}$ and $\pi^{\perp}$ are just the orthogonal projections onto $\spn(E_1, \ldots, E_d)$ and $\spn(E_{d+1}, \ldots, E_D)$ respectively. Let $\mathfrak{X}(M)$ denote the space of smooth vector fields on $M$. For a vector bundle $E$ let $\Gamma(E)$ denote the space of smooth sections of $E$. The \emph{second fundamental form} $\mathrm{II}: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \Gamma(NM)$ of $M$ is given by
+\benn
+	\mathrm{II}(X, Y) \ = \ (\tilde{\nabla}_X Y)^{\perp},
+\eenn
+where $X$ and $Y$ are extended arbitrarily to an open subset of $\tilde{M}$. The relevance of the second fundamental form is that it provides precisely the sort of relationship between the geometry of the ambient space and the geometry of $M$ that may be useful to our program. Let $X, Y \in \mathfrak{X}(M)$ be vector fields on $M$ extended arbitrarily to smooth vector fields on a neighborhood of $M$ in $\tilde{M}$. The \emph{Gauss Formula} states that along $M$ we have the following relationship between the covariant derivative of $Y$ along $X$ with respect to the Levi-Civita connections of the ambient metric $\tilde{g}$ and of the induced metric $g$:
+\benn
+	\tilde{\nabla}_X Y \ = \ \nabla_X Y + \mathrm{II}(X, Y).
+\eenn
+There is a corresponding formula for covariant derivatives along curves. If $\gamma: J \to M$ is a smooth curve, and $X$ is a smooth vector field along $\gamma$ that is everywhere tangent to $M$, then
+\benn
+	\tilde{D}_tX \ = \ D_tX + \mathrm{II}(\gamma', X),
+\eenn
+where $\tilde{D}_t X$ and $D_t X$ denote the covariant derivative of $X$ along $\gamma$ with respect to the connections of the ambient metric $\tilde{g}$ and the induced metric $g$ respectively.
+
+
+
+
+
+
+
+
+
+
+\end{document}
